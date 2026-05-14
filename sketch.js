@@ -41,7 +41,7 @@ function setup() {
 
   // MediaPipe Hands — 양손(maxNumHands: 2)
   const hands = new Hands({
-    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`
+    locateFile: (file) => file
   });
   hands.setOptions({
     maxNumHands: 2,
