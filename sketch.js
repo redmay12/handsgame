@@ -40,30 +40,15 @@ function setup() {
   video.hide();
 
   // MediaPipe Hands — 양손(maxNumHands: 2)
-  const hands = new Hands({
-    locateFile: (file) => file
-  });
-  hands.setOptions({
-    maxNumHands: 2,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.7,
-    minTrackingConfidence: 0.6
-  });
-  hands.onResults((results) => {
+const options = { detectionConfidence: 0.7, scoreThreshold: 0.5 };
+  const handpose = ml5.handpose(video, options, () => console.log("준비 완료"));
+  handpose.on("predict", (results) => {
     predictions = [];
-    if (!results.multiHandLandmarks) return;
-    results.multiHandLandmarks.forEach((landmarks) => {
-      const converted = landmarks.map(lm => [lm.x * 640, lm.y * 480, lm.z]);
+    if (results.length > 0) {
+      const converted = results[0].landmarks.map(lm => [lm[0], lm[1], lm[2]]);
       predictions.push({ landmarks: converted });
-    });
+    }
   });
-
-  const camera = new Camera(video.elt, {
-    onFrame: async () => { await hands.send({ image: video.elt }); },
-    width: 640,
-    height: 480
-  });
-  camera.start();
 
   ball = new Ball();
 
